@@ -18,10 +18,64 @@ half_add_sub.v	Arithmetic-circuit RTL
 half_add_sub_tb.v	Stimulus and VCD generation
 
 ### Verilog Program
-```
-```
+
+// gedit half_add_sub.v
+module half_adder (
+input wire A,
+input wire B,
+output wire Sum,
+output wire Carry
+);
+assign Sum = A ^ B; // XOR
+assign Carry = A &amp; B; // AND
+endmodule
+module half_subtractor (
+input wire A,
+input wire B,
+output wire Diff,
+output wire Borrow
+);
+assign Diff = A ^ B; // XOR
+assign Borrow = (~A) &amp; B; // A&#39; . B
+endmodule
+
 ### Testbench Program
 
+// gedit tb3.v
+
+module tb3;
+reg A, B;
+wire Sum, Carry;
+wire Diff, Borrow;
+// Instantiate the Half Adder
+half_adder ha_uut (
+.A(A),
+.B(B),
+.Sum(Sum),
+.Carry(Carry)
+);
+// Instantiate the Half Subtractor
+half_subtractor hs_uut (
+.A(A),
+.B(B),
+.Diff(Diff),
+.Borrow(Borrow)
+);
+initial begin
+// ---- VCD dump setup ----
+$dumpfile(&quot;half_add_sub.vcd&quot;); // name of the VCD file to be generated
+$dumpvars(0, tb3); // dump all signals in this testbench
+hierarchy
+// ---- Apply all 4 input combinations ----
+$monitor(&quot;Time=%0t A=%b B=%b | Sum=%b Carry=%b | Diff=%b Borrow=%b&quot;,
+$time, A, B, Sum, Carry, Diff, Borrow);
+A = 0; B = 0; #10;
+A = 0; B = 1; #10;
+A = 1; B = 0; #10;
+A = 1; B = 1; #10;
+#10 $finish;
+end
+endmodule
 
 ### Truth Table
 
@@ -85,26 +139,9 @@ The design was compiled and simulated using Synopsys VCS, and the functionality 
 
 ### Output
 
+<img width="1600" height="870" alt="WhatsApp Image 2026-11-20 at 6 51 57 AM (1)" src="https://github.com/user-attachments/assets/baa3c012-b1d3-4c76-97f4-c4431d4be7ee" />
 
-### Viva-Voce Questions
-
-•	What is a Half Adder, and what are its limitations compared to a Full Adder?
-
-•	What is a Half Subtractor, and what does the Borrow output signify?
-
-•	Why is the Sum/Difference expression identical (A⊕B) for both circuits, while Carry and Borrow differ?
-
-•	What gate realizes the XOR function, and why is it central to both circuits?
-
-•	What is the purpose of a Verilog testbench?
-
-•	Why is a VCD file generated, and what does $dumpvars(0, tb) do?
-
-•	What is the purpose of ./simv?
-
-•	What is the difference between simulation and synthesis?
-
-•	How would you extend this design to a Full Adder/Full Subtractor?
+<img width="1600" height="861" alt="WhatsApp Image 2026-11-20 at 6 51 56 AM (1)" src="https://github.com/user-attachments/assets/520c1356-2985-45e5-b931-4e1fd976ab60" />
 
 ### Result
 
